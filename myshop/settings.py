@@ -42,6 +42,7 @@ INSTALLED_APPS = (
     'orders',
     'paypal.standard.ipn',
     'payment',
+    'coupons',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -168,3 +169,7 @@ LOGGING = {
         }
     }
 }
+
+REDIS_HOST = 'localhost'
+REDIS_PORT = 6379
+REDIS_DB = 1

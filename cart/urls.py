@@ -9,4 +9,7 @@ urlpatterns = [
     url(r'^remove/(?P<product_id>\d+)/$',
         views.cart_remove,
         name='cart_remove'),
+    url(r'^remove_coupon/(?P<coupon_id>\d+)/$',
+        views.coupon_remove,
+        name='coupon_remove'),
 ]

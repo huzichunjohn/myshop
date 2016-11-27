@@ -1,6 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_POST
 from shop.models import Product
+from shop.recommender import Recommender
+from coupons.forms import CouponApplyForm
+from coupons.models import Coupon
 from .cart import Cart
 from .forms import CartAddProductForm
 
@@ -32,5 +35,20 @@ def cart_detail(request):
             item['update_quantity_form'] = CartAddProductForm(
                             initial={'quantity': item['quantity'],
                             'update': True})
-    return render(request, 'cart/detail.html', {'cart': cart, 'can_checkout': can_checkout})
+    coupon_apply_form = CouponApplyForm()
+    r = Recommender()
+    cart_products = [item['product'] for item in cart]
+    recommended_products = r.suggest_products_for(cart_products,
+                                                  max_results=4)
+    return render(request,
+                  'cart/detail.html',
+                  {'cart': cart,
+                   'can_checkout': can_checkout,
+                   'coupon_apply_form': coupon_apply_form,
+                   'recommended_products': recommended_products})
 
+def coupon_remove(request, coupon_id):
+    cart = Cart(request)
+    coupon = get_object_or_404(Coupon, id=coupon_id)
+    cart.remove_coupon(coupon)
+    return redirect('cart:cart_detail')
